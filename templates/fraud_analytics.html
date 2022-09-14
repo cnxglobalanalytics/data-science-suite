@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Fraud Analytics</title>
+    <link href="/static/css/styles.css" rel="stylesheet"/>
+    <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet"
+          crossorigin="anonymous"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"
+            crossorigin="anonymous"></script>
+    <style>
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+
+
+.dropdown .dropbtn {
+  font-size: 16px;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: #6495ED;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+    </style>
+</head>
+<body class="sb-nav-fixed">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <a class="navbar-brand" href="/dashboard/">Concentrix AI Labs </a>
+    <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#" style="margin-left: 4%;"><i class="fas fa-bars"></i>
+    </button>
+
+
+
+<div class="dropdown">
+    <button class="dropbtn">Solutions
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a href="/">CV</a>
+      <!--<a href="C:/Users/RNALAB/Downloads/ImageClassification/templates/nlp.html">NLP</a>-->
+
+    </div>
+  </div>
+
+
+    <!-- Navbar Search-->
+    <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+        <div class="input-group">
+            <input class="form-control" type="text" placeholder="Search for..." aria-label="Search"
+                   aria-describedby="basic-addon2"/>
+            <div class="input-group-append">
+                <button class="btn btn-info btn-sm" type="button"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </form>
+    <!-- Navbar-->
+    <ul class="navbar-nav ml-auto ml-md-0">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">Logout</a>
+            </div>
+        </li>
+    </ul>
+</nav>
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+              <!-- <div class="nav">
+
+                    <a class="nav-link active" href="/dashboard/">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        Image Classification
+                    </a>
+                    <a class="nav-link active" href="/dashboard/">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        Object Detection
+                    </a>
+                    <a class="nav-link active" href="/dashboard/">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        Image Frames Creation
+                    </a>
+
+                </div>-->
+            </div>
+            <p>Click on the link to download the Result csv file:</p>
+
+            <p id = file_name></p>
+
+            <p>Click on the link to download the Explainable-AI/Prescriptive Analytics file:</p>
+
+            <p id = pdf_file_name></p>
+
+            <!--<p>Click on the link to download the PBI file:</p>
+
+            <p id = pbi_file></p>-->
+
+            <div class="sb-sidenav-footer">
+                <div class="small">Logged in as:</div>
+                demo@concentrix.com
+            </div>
+        </nav>
+    </div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid">
+                <h6 class="mt-4"></h6>
+                <!--<ol class="breadcrumb text-black mb-4">-->
+                    <h3 class="text-info">Data Science Solutions</h3>
+                <!--</ol>-->
+
+                <div class="row">
+                    <div class="col-xl-6">
+                        <form method="POST" name="form" id='id_ajax_upload_form' enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="alert alert-info alert-dismissible fade show">
+                                <div class="card-header bg-gradient-light text-dark">
+                                    <i class="fas fa-chart-area mr-1"></i>
+                                    Input Data/File:
+                                </div>
+                                <div class="form-group">
+                                    <label class="small mb-1" for="inputFile"></label>
+                                    <input class="form-control" id="inputFile" type="file" name="file"
+                                           aria-describedby="emailHelp"
+                                           style="height: auto;width: 80%;margin-left: 10%;margin-right: 10%;"/>
+                                </div>
+                                <div class="form-group" style="margin-left: 10%;">
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault8" value="aarp_iforest">
+                                        <label class="form-check-label" title="Details of Use Case :: &#013;&#010;Can be used to predict Agents who are involved in work avoidance&#013;&#010;"for="flexRadioDefault8">
+                                            AARP Anomaly Detection (Isolation Forest)
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault9" value="aarp_onesvm">
+                                        <label class="form-check-label" title="Details of Use Case :: &#013;&#010;Can be used to predict Agents who are involved in work avoidance&#013;&#010;" for="flexRadioDefault9">
+                                            AARP Anomaly Detection (One Class SVM)
+                                        </label>
+                                    </div>
+
+                                    <!--<div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault10" value="ts_lstm">
+                                        <label class="form-check-label" for="flexRadioDefault10">
+                                            Univariate Time Series Forecasting(Recurrent Neural Networks(LSTM))
+                                        </label>
+                                    </div>-->
+                                    <!-- <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault11" value="multivariate_time_series">
+                                        <label class="form-check-label" title="Details of Use Case :: &#013;&#010;Can be used to forecast call-volume in Contact center or Agent shrinkage&#013;&#010;"for="flexRadioDefault11">
+                                            Multivariate Time Series Forecasting(Supervised Machine Learning)
+                                        </label>
+                                    </div>
+                                     <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault12" value="medicare_claim_anom_detect">
+                                        <label class="form-check-label" title="Details of Use Case :: &#013;&#010;Can be used to detect outlier based predictors for Health Insurance Fraud Detection&#013;&#010;"for="flexRadioDefault12">
+                                            Anomaly Detection for Health Insurance Service Providers(Unsupervised Machine Learning)
+                                        </label>
+                                    </div> -->
+
+
+                                </div>
+
+                                <div class="form-group mt-4 mb-0">
+                                    <input type="submit" class="btn btn-info btn-lg btn-block"
+                                           style="height: auto;width: 80%;margin-left: 10%;margin-right: 10%;"
+                                           id="startExecution"
+                                           value="Start Execution"></div>
+                                <div class="card-body" id="inputBody">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-xl-6">
+                        <div class="alert alert-success alert-dismissible fade show">
+                            <div class="card-header bg-success" id="cardlabel">
+                                <i class="fas fa-chart-bar mr-1"></i>
+                                Result:
+                            </div>
+                            <div class="card-body">
+                                <div class="loader" id="spinner" style="margin-left: 40%; margin-top: 5%;"></div>
+                                <div id="outputBody">
+                                    <table class="table" id="outputBodyTable">
+                                        <tr>
+                                            <td id="language_title" >Image frame Detected(Y/N):</td>
+                                            <td id="language">/td>
+                                        </tr>
+                                        <tr>
+                                            <td id="watermark_title" >Does the image contain a Logo/Watermark/Embedded Text:</td>
+                                            <td id="watermark">/td>
+                                        </tr>
+                                        <tr>
+                                            <td id="result_title">Is it the Triller Logo/Watermark/Embedded Text:</td>
+                                            <td id="isResult" style="bgcolor:yellow;"></td>
+                                        </tr>
+                                        <tr>
+                                            <td id="action_title">Suggestive Action:</td>
+                                            <td id="action" style="bgcolor:yellow;"></td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </main>
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">&#169; 2021 Concentrix Corporation. All Rights Reserved.</div>
+                    <div>
+                        <a href="#">Privacy Policy</a>
+                        &middot;
+                        <a href="#">Terms &amp; Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('input:radio[name=event]').change(function() {
+
+        if (this.value == 'aarp_iforest') {
+            $("#cardlabel").html("Selected Features: Staffed Hrs, Avg Hold Time, Calls Handled, Schedule Adherence Revised, Aux Total Min, Agent Productivity");
+
+            $('#startExecution').val("Start Anomaly Detection");;
+        }
+
+        if (this.value == 'aarp_onesvm') {
+            $("#cardlabel").html("Selected Features: Staffed Hrs, Avg Hold Time, Calls Handled, Schedule Adherence Revised, Aux Total Min, Agent Productivity");
+
+            $('#startExecution').val("Start Anomaly Detection");;
+        }
+        
+    });
+        $("#spinner").hide();
+        $("#outputBody").hide();
+
+        $('#id_ajax_upload_form').submit(function (e) {
+            e.preventDefault();
+            $form = $(this)
+            var formData = new FormData(this);
+            $("#spinner").show();
+            $("#startExecution").hide();
+            $.ajax({
+                url: '/dashboard/',
+                type: 'POST',
+                data: formData,
+                success: function (data) {
+                    console.log(data);
+                    if (data.success) {
+
+                        if (data.success.event==="IC"){
+                        $("#cardlabel").html("Image Classification");
+                        $("#language").html(data.success.result.Language);
+                        $("#watermark").html(data.success.result.is_result);
+                        $("#isResult").html(data.success.result.is_triller);
+                        $("#action").html(data.success.result.action);
+                        $("#file_name").html('<a href='+data.success.result.file_name+' download>Download File</a>')
+                        $("#pdf_file_name").html('<a href='+data.success.result.pdf_file_name+' download>Download File</a>')
+                        }
+
+
+                        if (data.success.event==="aarp_iforest"){
+                        if (data.success.is_result==="No file found."){
+                        $("#cardlabel").html("Isolation Forest Anomaly Detection for AARP");
+                        $("#outputBody").html("<p>No file found.</p>");
+                        $("#file_name").hide();
+
+                        }
+                        else{
+                        $("#outputBody").html("<p>Anomlay Detection using Isolation Forest Done! Result Attached</p>");
+                        $("#cardlabel").html("Outlier Prediction");
+                        $("#file_name").html('<a href='+data.success.file_name+' download>Download File</a>');
+                        $("#outputBodyTable").hide();
+                        }
+                        }
+                        
+                        if (data.success.event==="aarp_onesvm"){
+                        if (data.success.is_result==="No file found."){
+                        $("#cardlabel").html("One Class SVM Anomaly Detectionfor AARP");
+                        $("#outputBody").html("<p>No file found.</p>");
+                        $("#file_name").hide();
+                        $("#pdf_file_name").hide();
+
+                        }
+                        else{
+                        $("#outputBody").html("<p>Anomaly Detection using One Class SVM Done! Result Attached</p>");
+                        $("#cardlabel").html("Outlier Prediction");
+                        $("#file_name").html('<a href='+data.success.file_name+' download>Download File</a>');
+                        $("#pdf_file_name").html('<a href='+data.success.pdf_file_name+' download>Download File</a>')
+                        $("#outputBodyTable").hide();
+                        }
+                        }
+
+                        // if (data.success.event==="ts_lstm"){
+                        // if (data.success.is_result==="No file found."){
+                        // $("#cardlabel").html("Time Series Forecasting");
+                        // $("#outputBody").html("<p>No file found.</p>");
+                        // $("#file_name").hide();
+
+
+                        // }
+                        // else{
+                        // $("#outputBody").html("<p>Time Series Forecasting Done! Result Attached</p>");
+                        // $("#cardlabel").html("Time Series Forecasting");
+                        // $("#file_name").html('<a href='+data.success.file_name+' download>Download File</a>');
+
+                        // $("#outputBodyTable").hide();
+                        // }
+                        // }
+
+                        // if (data.success.event==="churn_pred"){
+                        // if (data.success.is_result==="No file found."){
+                        // $("#cardlabel").html("Customer Churn Prediction");
+                        // $("#outputBody").html("<p>No file found.</p>");
+                        // $("#file_name").hide();
+
+                        // }
+                        // else{
+                        // $("#outputBody").html("<p>Customer Churn Prediction Done! Result Attached</p>");
+                        // $("#cardlabel").html("Customer Churn Prediction");
+                        // $("#file_name").html('<a href='+data.success.file_name+' download>Download File</a>');
+
+                        // $("#outputBodyTable").hide();
+                        // }
+                        // }
+                        // if (data.success.event==="multivariate_time_series"){
+                        // if (data.success.is_result==="No file found."){
+                        // $("#cardlabel").html("Multivariate Time Series Forecasting");
+                        // $("#outputBody").html("<p>No file found.</p>");
+                        // $("#file_name").hide();
+
+                        // }
+                        // else{
+                        // $("#outputBody").html("<p>Multivariate Time Series Forecasting Done! Result Attached</p>");
+                        // $("#cardlabel").html("Multivariate Time Series Forecasting");
+                        // $("#file_name").html('<a href='+data.success.file_name+' download>Download File</a>');
+                        // $("#outputBodyTable").hide();
+                        // }
+                        // }
+
+                        // if (data.success.event==="Frame_creation"){
+                        // if (data.success.is_result==="No Frames created."){
+                        // $("#outputBody").html("<p>No Frames created.</p>")
+                        // }
+                        // else{
+                        // $("#cardlabel").html("Frames");
+                        // $("#outputBody").append('<p><img src="/media/frame0.jpg" width="50%" height="50%"></p>','<p><img src="/media/frame20.jpg" width="50%" height="50%"></p>');
+
+                        // $("#outputBodyTable").hide();
+                        // }
+                        // }
+
+                        $("#spinner").hide();
+                        $("#startExecution").show();
+                        $("#outputBody").show();
+                    }
+                    if (data.error) {
+                        $("#relay_1_error_message").html(data.error)
+                        $("#spinner").hide();
+                        $("#startExecution").show();
+                    }
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        });
+        // end
+
+    });
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+<script src="/static/js/scripts.js"></script>
+<script
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</body>

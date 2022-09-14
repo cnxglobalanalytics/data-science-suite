@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Concentrix Image Classification</title>
+    <link href="/static/css/styles.css" rel="stylesheet"/>
+    <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet"
+          crossorigin="anonymous"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"
+            crossorigin="anonymous"></script>
+    <style>
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+
+.dropdown .dropbtn {
+  font-size: 16px;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: #6495ED;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+    </style>
+</head>
+<body class="sb-nav-fixed">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <a class="navbar-brand" href="/dashboard/">Concentrix AI Labs </a>
+    <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#" style="margin-left: 4%;"><i class="fas fa-bars"></i>
+    </button>
+
+
+
+
+<div class="dropdown">
+    <button class="dropbtn">Solutions
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a href="/">CV</a>
+      <!--<a href="C:/Users/RNALAB/Downloads/ImageClassification/templates/nlp.html">NLP</a>-->
+
+    </div>
+  </div>
+
+
+    <!-- Navbar Search-->
+    <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+        <div class="input-group">
+            <input class="form-control" type="text" placeholder="Search for..." aria-label="Search"
+                   aria-describedby="basic-addon2"/>
+            <div class="input-group-append">
+                <button class="btn btn-info btn-sm" type="button"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </form>
+    <!-- Navbar-->
+    <ul class="navbar-nav ml-auto ml-md-0">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">Logout</a>
+            </div>
+        </li>
+    </ul>
+</nav>
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+              <!-- <div class="nav">
+
+                    <a class="nav-link active" href="/dashboard/">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        Image Classification
+                    </a>
+                    <a class="nav-link active" href="/dashboard/">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        Object Detection
+                    </a>
+                    <a class="nav-link active" href="/dashboard/">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        Image Frames Creation
+                    </a>
+
+                </div>-->
+            </div>
+            <p>Click on the link to download the Result csv file:</p>
+
+            <p id = file_name></p>
+
+            <p>Click on the link to download the Content Moderation file:</p>
+
+            <p id = pdf_file_name></p>
+
+            <div class="sb-sidenav-footer">
+                <div class="small">Logged in as:</div>
+                demo@concentrix.com
+            </div>
+        </nav>
+    </div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid">
+                <h6 class="mt-4"></h6>
+                <!--<ol class="breadcrumb text-black mb-4">-->
+                    <h3 class="text-info">Data Science Solutions</h3>
+                <!--</ol>-->
+
+                <div class="row">
+                    <div class="col-xl-6">
+                        <form method="POST" name="form" id='id_ajax_upload_form' enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="alert alert-info alert-dismissible fade show">
+                                <div class="card-header  bg-gradient-light text-dark">
+                                    <i class="fas fa-chart-area mr-1"></i>
+                                    Input Data/File: The column header of the data to be analysed should be renamed as "text"
+                                </div>
+                                <div class="form-group">
+                                    <label class="small mb-1" for="inputFile"></label>
+                                    <input class="form-control" id="inputFile" type="file" name="file"
+                                           aria-describedby="emailHelp"
+                                           style="height: auto;width: 80%;margin-left: 10%;margin-right: 10%;"/>
+                                </div>
+                                <div class="form-group" style="margin-left: 10%;">
+                                    <!--<div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault1" value="Frame_creation">
+                                        <label class="form-check-label" for="flexRadioDefault1">
+                                            Image Frames Creation
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault2" value="IC" checked>
+                                        <label class="form-check-label" for="flexRadioDefault2">
+                                            Image Classification
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault3" value="OD">
+                                        <label class="form-check-label" for="flexRadioDefault3">
+                                            Object Detection
+                                        </label>
+                                    </div>-->
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault1" value="text_preprocess">
+                                        <label class="form-check-label"  title="Details of Use Case :: &#013;&#010;Can be used to preprocess and clean the text data and identify the language &#013;&#010; "for="flexRadioDefault1">
+                                            Text Preprocessing
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault2" value="Summ_text">
+                                        <label class="form-check-label"  title="Details of Use Case :: &#013;&#010;Can be used to summarize a very large text into small comprehensive  &#013;&#010;executive summary/abstract (POC oppurtunity like that of Email Summarization) &#013;&#010;"for="flexRadioDefault2">
+                                            Text Summarization
+                                        </label>
+                                    </div>
+
+                                    <!--<div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault10" value="Topic_Model_Supervised">
+                                        <label class="form-check-label" for="flexRadioDefault10">
+                                            Topics Extraction Supervised
+                                        </label>
+                                    </div>-->
+                                     <!--<div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault3" value="ner_extraction">
+                                        <label class="form-check-label" for="flexRadioDefault3">
+                                            Named Entities Recognition
+                                        </label>
+                                    </div>-->
+                                    <!--<div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault4" value="theme_extraction">
+                                        <label class="form-check-label" for="flexRadioDefault4">
+                                            Themes Classification
+                                        </label>
+                                    </div>-->
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault11" value="topic_model_unsup">
+                                        <label class="form-check-label" title="Details of Use Case :: &#013;&#010;Can be used to extract key topics & it's combination from a very large complex &#013;&#010;as well as unstructured text (POC oppurtunity like that of VOC, NPS, Call Drivers, Survey Analytics)&#013;&#010;"for="flexRadioDefault11">
+                                            Topics Extraction(Unsupervised Machine Learning)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault5" value="basic_sent_analysis">
+                                        <label class="form-check-label" title="Details of Use Case :: &#013;&#010;Can be used to do sentiment analysis (POC oppurtunity like that of VOC,NPL)&#013;&#010;"for="flexRadioDefault5">
+                                            Sentiment Analysis(Supervised Machine Learning)
+                                        </label>
+                                    </div>
+                                     <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault6" value="hatespeech_offensive_detect">
+                                        <label class="form-check-label" title="Details of Use Case :: &#013;&#010;Can be used to filter & detect profane/slang/abusive/hate speech language&#013;&#010; for a text data (POC oppurtunities for various CoMo accounts)&#013;&#010;"for="flexRadioDefault6">
+                                            Hatespeech/Offensive Language Detection(Supervised Machine Learning)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault7" value="twitter_sent">
+                                        <label class="form-check-label"  title="Details of Use Case :: &#013;&#010;Can be used to filter & detect profane/racism/hate speech &#013;&#010;from a text data (POC oppurtunities for various CoMo accounts)&#013;&#010;"for="flexRadioDefault7">
+                                            Racist Comments Detection(Supervised Machine Learning)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault8" value="profane_language_detect">
+                                        <label class="form-check-label"  title="Details of Use Case :: &#013;&#010;Can be used to filter & detect profane/slang/abusive language for a audio & text data (POC oppurtunities for various CoMo accounts)&#013;&#010;"for="flexRadioDefault8">
+                                            Profane Language Detection Batch_mode(Supervised Machine Learning)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault9" value="profane_lang_detect_realtime">
+                                        <label class="form-check-label"  title="Details of Use Case :: &#013;&#010;Can be used to filter & detect profane/slang/abusive language for a audio data (POC oppurtunities for various CoMo accounts)&#013;&#010;"for="flexRadioDefault9">
+                                            Profane Language Detection Real_time(Supervised Machine Learning)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="event"
+                                               id="flexRadioDefault10" value="resume_screen">
+                                        <label class="form-check-label"  title="Details of Use Case :: &#013;&#010;The best use case can be to ease work of People Solutions and Recruitment team &#013;&#010; while screening a very high pool of candidates & categorizing their resumes in fraction of seconds&#013;&#010;"for="flexRadioDefault10">
+                                            Resume Screening(Supervised Machine Learning)
+                                        </label>
+                                    </div>
+
+
+
+
+                                </div>
+
+                                <div class="form-group mt-4 mb-0">
+                                    <input type="submit" class="btn btn-info btn-lg btn-block"
+                                           style="height: auto;width: 80%;margin-left: 10%;margin-right: 10%;"
+                                           id="startExecution"
+                                           value="Start Execution"></div>
+                                <div class="card-body" id="inputBody">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-xl-6">
+                        <div class="alert alert-success alert-dismissible fade show">
+                            <div class="card-header bg-success" id="cardlabel">
+                                <i class="fas fa-chart-bar mr-1"></i>
+                                Result:
+                            </div>
+                            <div class="card-body">
+                                <div class="loader" id="spinner" style="margin-left: 40%; margin-top: 5%;"></div>
+                                <div id="outputBody">
+                                    <table class="table" id="outputBodyTable">
+                                        <tr>
+                                            <td id="language_title" >Image frame Detected(Y/N):</td>
+                                            <td id="language">/td>
+                                        </tr>
+                                        <tr>
+                                            <td id="watermark_title" >Does the image contain a Logo/Watermark/Embedded Text:</td>
+                                            <td id="watermark">/td>
+                                        </tr>
+                                        <tr>
+                                            <td id="result_title">Is it the Triller Logo/Watermark/Embedded Text:</td>
+                                            <td id="isResult" style="bgcolor:yellow;"></td>
+                                        </tr>
+                                        <tr>
+                                            <td id="action_title">Suggestive Action:</td>
+                                            <td id="action" style="bgcolor:yellow;"></td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </main>
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">&#169; 2021 Concentrix Corporation. All Rights Reserved.</div>
+                    <div>
+                        <a href="#">Privacy Policy</a>
+                        &middot;
+                        <a href="#">Terms &amp; Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+<script src="/static/js/scripts.js"></script>
+<script
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('input:radio[name=event]').change(function() {
+        if (this.value == 'IC') {
+            $('#startExecution').val("Start Classification");
+        }
+        else if (this.value == 'OD') {
+            $('#startExecution').val("Start Object Detection");
+        }
+        else if (this.value == 'Frame_creation') {
+            $('#startExecution').val("Start Frame Creation");;
+        }
+        else if (this.value == 'hatespeech_offensive_detect') {
+            $('#startExecution').val("Start Hate speech/Offensive language Detection");;
+        }
+        else if (this.value == 'twitter_sent') {
+            $('#startExecution').val("Start Twitter Racist Comment Detection");;
+        }
+        else if (this.value == 'Summ_text') {
+            $('#startExecution').val("Start Text Summarization");;
+        }
+        else if (this.value == 'text_preprocess') {
+            $('#startExecution').val("Start Text Preprocessing");;
+        }
+        else if (this.value == 'text_preprocess') {
+            $('#startExecution').val("Start Text Sentiment Analysis");;
+        }
+        else if (this.value == 'profane_language_detect') {
+            $('#startExecution').val("Start Profane Language Detection");;
+        }
+        else if (this.value == 'profane_lang_detect_realtime') {
+            $('#startExecution').val("Start Profane Language Detection");;
+        }
+        else if (this.value == 'ner_extraction') {
+            $('#startExecution').val("Start Named Entities Extraction");;
+        }
+        else if (this.value == 'theme_extraction') {
+            $('#startExecution').val("Start Main Themes Extraction");;
+        }
+        else if (this.value == 'Topic_Model_Supervised') {
+            $('#startExecution').val("Start Topics Extraction");;
+        }
+        else if (this.value == 'topic_model_unsup') {
+            $('#startExecution').val("Start Topics Extraction");;
+        }
+        else if (this.value == 'resume_screen') {
+            $('#startExecution').val("Start Resume Screening");;
+        }
+
+
+    });
+        $("#spinner").hide();
+        $("#outputBody").hide();
+
+        $('#id_ajax_upload_form').submit(function (e) {
+            e.preventDefault();
+            $form = $(this)
+            var formData = new FormData(this);
+            $("#spinner").show();
+            $("#startExecution").hide();
+            $.ajax({
+                url: '/dashboard/',
+                type: 'POST',
+                data: formData,
+                success: function (data) {
+                    console.log(data);
+                    if (data.success) {
+
+                        if (data.success.event==="IC"){
+                        $("#cardlabel").html("Image Classification");
+                        $("#language").html(data.success.result.Language);
+                        $("#watermark").html(data.success.result.is_result);
+                        $("#isResult").html(data.success.result.is_triller);
+                        $("#action").html(data.success.result.action);
+                        $("#file_name").html('<a href='+data.success.result.file_name+' download>Download File</a>')
+                        $("#pdf_file_name").html('<a href='+data.success.result.pdf_file_name+' download>Download File</a>')
+                        }
+
+
+                        if (data.success.event==="profane_lang_detect_realtime"){
+                        $("#language_title").html("Language Detected:");
+                        $("#watermark_title").html("Does Audio Contain Profanity:");
+                        $("#result_title").html("What is the sentiment:");
+                        $("#action_title").html("Recommended Action:");
+                        $("#cardlabel").html("Profane Language Detection Realtime");
+                        $("#language").html(data.success.result.Language);
+                        $("#watermark").html(data.success.result.Result);
+                        $("#isResult").html(data.success.result.Sentiment);
+                        $("#action").html(data.success.result.action);
+
+                        }
+
+                        if (data.success.event==="topic_model_unsup"){
+                        $("#language_title").html("Language Detected:");
+                        $("#watermark_title").html("Number of Topics:");
+                        $("#result_title").html("Number of Top Tokens:");
+                        $("#action_title").html("Topics Extracted:");
+                        $("#cardlabel").html("Unsupervised Topics Extraction:");
+                        $("#language").html(data.success.result.Language);
+                        $("#watermark").html(data.success.result.Topic_Count);
+                        $("#isResult").html(data.success.result.Top_tokens);
+                        $("#action").html(data.success.result.Result);
+
+                        }
+
+
+
+                        if (data.success.event==="Topic_Model_Supervised"){
+                        if (data.success.is_result==="No file found."){
+                        $("#cardlabel").html("Topics Extraction");
+                        $("#outputBody").html("<p>No file found.</p>");
+                        $("#file_name").hide();
+
+                        }
+                        else{
+                        $("#outputBody").html("<p>Topics Extraction Done! Result Attached</p>");
+                        $("#cardlabel").html("Topics Extraction");
+                        $("#file_name").html('<a href='+data.success.file_name+' download>Download File</a>');
+                        $("#outputBodyTable").hide();
+                        }
+                        }
+
+                        if (data.success.event==="Summ_text"){
+                        $("#language_title").html("Input Text:");
+                        $("#action_title").html("Summarised Text:");
+                        $("#watermark_title").html("Language Detected:");
+                        $("#result_title").html("No of Words Present:");
+                        $("#cardlabel").html("Text Summarisation");
+                        $("#language").html(data.success.result.String);
+                        $("#action").html(data.success.result.Result);
+                        $("#watermark").html(data.success.result.Language);
+                        $("#isResult").html(data.success.result.Words);
+
+
+                        }
+
+                        if (data.success.event==="ner_extraction"){
+                        $("#language_title").html("Language Detected:");
+                        $("#watermark_title").html("Length of the Text:");
+                        $("#result_title").html("Length of Unique words:");
+                        $("#action_title").html("Named Entities:");
+                        $("#cardlabel").html("Named Entities Extraction");
+                        $("#language").html(data.success.result.language);
+                        $("#watermark").html(data.success.result.length);
+                        $("#isResult").html(data.success.result.unique_words);
+                        $("#action").html(data.success.result.ent);
+                        }
+
+                        if (data.success.event==="theme_extraction"){
+                        $("#language_title").html("Language Detected:");
+                        $("#watermark_title").html("Length of the Text:");
+                        $("#result_title").html("Length of Unique words:");
+                        $("#action_title").html("Main Themes in Text:");
+                        $("#cardlabel").html("Prevalent Themes Extraction");
+                        $("#language").html(data.success.result.language);
+                        $("#watermark").html(data.success.result.length);
+                        $("#isResult").html(data.success.result.unique_words);
+                        $("#action").html(data.success.result.extracted_themes);
+                        }
+
+
+                        if (data.success.event==="OD"){
+                        if (data.success.is_result==="No vehicle present."){
+                        $("#cardlabel").html("Object Detection");
+                        $("#outputBody").html("<p>No Vehicle Present.</p>");
+                        $("#file_name").hide();
+                        $("#pdf_file_name").hide();
+
+                        }
+                        else{
+                        $("#outputBody").html('<img src="/media/model_output.jpg" width="100%" height="100%">');
+                        $("#cardlabel").html("Object Detection");
+                        $("#file_name").html('<a href='+data.success.file_name+' download>Download File</a>');
+                        $("#pdf_file_name").html('<a href='+data.success.pdf_file_name+' download>Download File</a>');
+                        $("#outputBodyTable").hide();
+                        }
+                        }
+
+                        if (data.success.event==="hatespeech_offensive_detect"){
+                        if (data.success.is_result==="No file found."){
+                        $("#cardlabel").html("Hate speech/Offensive Language Detection");
+                        $("#outputBody").html("<p>No file found.</p>");
+                        $("#file_name").hide();
+
+                        }
+                        else{
+                        $("#outputBody").html("<p>Classification Done! Result Attached</p>");
+                        $("#cardlabel").html("Hate speech/Offensive Language Detection");
+                        $("#file_name").html('<a href='+data.success.file_name+' download>Download File</a>');
+                        $("#outputBodyTable").hide();
+                        }
+                        }
+
+                        if (data.success.event==="profane_language_detect"){
+                        if (data.success.is_result==="No file found."){
+                        $("#cardlabel").html("Profane Language Detection");
+                        $("#outputBody").html("<p>No file found.</p>");
+                        $("#file_name").hide();
+
+                        }
+                        else{
+                        $("#outputBody").html("<p>Classification Done! Result Attached</p>");
+                        $("#cardlabel").html("Profane Language Detection");
+                        $("#file_name").html('<a href='+data.success.file_name+' download>Download File</a>');
+                        $("#outputBodyTable").hide();
+                        }
+                        }
+
+                        if (data.success.event==="twitter_sent"){
+                        if (data.success.is_result==="No file found."){
+                        $("#cardlabel").html("Racist Comment Detection");
+                        $("#outputBody").html("<p>No file found.</p>");
+                        $("#file_name").hide();
+
+                        }
+                        else{
+                        $("#outputBody").html("<p>Racist Comments Detected! Result Attached</p>");
+                        $("#cardlabel").html("Racist Comment Detection");
+                        $("#file_name").html('<a href='+data.success.file_name+' download>Download File</a>');
+                        $("#outputBodyTable").hide();
+                        }
+                        }
+
+                        if (data.success.event==="basic_sent_analysis"){
+                        if (data.success.is_result==="No file found."){
+                        $("#cardlabel").html("Text Sentiment Analysis");
+                        $("#outputBody").html("<p>No file found.</p>");
+                        $("#file_name").hide();
+
+                        }
+                        else{
+                        $("#outputBody").html("<p>Sentiment Analysis Done! Result Attached</p>");
+                        $("#cardlabel").html("Text Sentiment Analysis");
+                        $("#file_name").html('<a href='+data.success.file_name+' download>Download File</a>');
+                        $("#outputBodyTable").hide();
+                        }
+                        }
+
+
+                        if (data.success.event==="resume_screen"){
+                        if (data.success.is_result==="No file found."){
+                        $("#cardlabel").html("Resume Screening");
+                        $("#outputBody").html("<p>No file found.</p>");
+                        $("#file_name").hide();
+
+                        }
+                        else{
+                        $("#outputBody").html("<p>Resume Screening Done! Result Attached</p>");
+                        $("#cardlabel").html("Resume Screening");
+                        $("#file_name").html('<a href='+data.success.file_name+' download>Download File</a>');
+                        $("#outputBodyTable").hide();
+                        }
+                        }
+
+                        if (data.success.event==="text_preprocess"){
+                        if (data.success.is_result==="No file found."){
+                        $("#cardlabel").html("Text Preprocessing");
+                        $("#outputBody").html("<p>No file found.</p>");
+                        $("#file_name").hide();
+
+                        }
+                        else{
+                        $("#outputBody").html("<p>Text Preprocessing Done! Result Attached</p>");
+                        $("#cardlabel").html("Text Preprocess");
+                        $("#file_name").html('<a href='+data.success.file_name+' download>Download File</a>');
+                        $("#outputBodyTable").hide();
+                        }
+                        }
+
+
+                        if (data.success.event==="Frame_creation"){
+                        if (data.success.is_result==="No Frames created."){
+                        $("#outputBody").html("<p>No Frames created.</p>")
+                        }
+                        else{
+                        $("#cardlabel").html("Frames");
+                        $("#outputBody").append('<p><img src="/media/frame0.jpg" width="50%" height="50%"></p>','<p><img src="/media/frame20.jpg" width="50%" height="50%"></p>');
+
+                        $("#outputBodyTable").hide();
+                        }
+                        }
+
+                        $("#spinner").hide();
+                        $("#startExecution").show();
+                        $("#outputBody").show();
+                    }
+                    if (data.error) {
+                        $("#relay_1_error_message").html(data.error)
+                        $("#spinner").hide();
+                        $("#startExecution").show();
+                    }
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        });
+        // end
+
+    });
+
+
+</script>
+</body>
+</html>
+
