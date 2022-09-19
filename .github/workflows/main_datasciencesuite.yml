@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'datasciencesuite'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_78ED79C408B14E709A5B2383A7A48AFA }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_65AFD13B49284B5B944A1100BA9672FC }}
