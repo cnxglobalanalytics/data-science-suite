@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 import pandas as pd
 from math import sqrt
 from PIL import Image
-from ImageClassification.settings import BASE_DIR,MEDIA_ROOT
+from ImageClassification.settings import BASE_DIR,MODELS_PATH,MEDIA_ROOT
 
 # def export(request):
 #     response = HttpResponse(content_type = 'text/csv')
