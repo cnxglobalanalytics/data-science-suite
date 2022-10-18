@@ -1,3 +1,4 @@
+gdown==4.5.3
 asgiref==3.5.2
 contourpy==1.0.5
 cycler==0.11.0
