@@ -5,7 +5,7 @@ ca-certificates==2022.10.11
 certifi==2022.12.7
 charset-normalizer==2.1.1
 contourpy==1.0.6=pypi_0
-cycler=0.11.0=pypi_0
+cycler==0.11.0=pypi_0
 cython=0.29.32=pypi_0
 et-xmlfile=1.1.0=pypi_0
 fonttools=4.38.0=pypi_0
