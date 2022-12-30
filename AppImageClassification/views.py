@@ -3,7 +3,7 @@ import os, time, sys
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.core.files.storage import default_storage
-import numpy as np
+import numpy as np 
 from matplotlib import pyplot as plt
 import pandas as pd
 from math import sqrt
