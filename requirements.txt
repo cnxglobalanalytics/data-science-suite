@@ -1,7 +1,7 @@
 # This file may be used to create an environment using:
 # $ conda create --name <env> --file <this file>
 # platform: win-64
-ca-certificates==2022.10.11
+# ca-certificates==2022.10.11
 certifi==2022.12.7
 charset-normalizer
 contourpy==1.0.6
