@@ -40,8 +40,8 @@ smart-open==6.3.0
 threadpoolctl==3.1.0
 tzdata==2022.2
 urllib3==1.26.13
-vc==14.2
-vs2015_runtime==14.27.29016
+# vc==14.2
+# vs2015_runtime==14.27.29016
 wheel==0.37.1
 wincertstore==0.2
 gunicorn====20.1.0
