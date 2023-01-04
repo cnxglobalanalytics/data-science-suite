@@ -28,11 +28,7 @@ jobs:
           source venv/bin/activate
       
       - name: Install dependencies
-        run: |
-             sudo apt-get update  &&
-             sudo apt-get install ffmpeg libsm6 libxext6  -y &&
-             pip install -r requirements.txt 
-        
+        run: pip install -r requirements.txt
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
@@ -64,4 +60,4 @@ jobs:
         with:
           app-name: 'dsprojects'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_284CC5037EA747698D43A5A16083061F }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_58E6E422B2CC4E79AF3980A15DABB7F5 }}
