@@ -28,9 +28,7 @@ jobs:
           source venv/bin/activate
       
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install tensorflow
+        run: pip install -r requirements.txt
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
@@ -62,4 +60,4 @@ jobs:
         with:
           app-name: 'dsprojects'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C7179C3E06334F3E818338D002984548 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D0A3EFBD354E44ABB5DFECAAC3C66BD9 }}
