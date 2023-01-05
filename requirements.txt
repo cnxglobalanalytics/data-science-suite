@@ -15,7 +15,7 @@ fst-pso==1.8.1
 fuzzytm==2.0.5
 gensim==4.3.0
 idna==3.4
-imageio==2.23.0
+#imageio==2.23.0
 joblib==1.2.0
 kiwisolver==1.4.4
 matplotlib==3.6.0
