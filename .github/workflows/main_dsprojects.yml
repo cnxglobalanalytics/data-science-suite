@@ -31,6 +31,9 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install tensorflow
+          pip uninstall opencv-python --yes
+          pip uninstall opencv-python-headless --yes
+          pip install opencv-python
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
