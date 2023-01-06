@@ -1,11 +1,11 @@
 from tensorflow.keras.preprocessing.image import load_img
 from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from matplotlib.image import imread
-import os
-from datetime import datetime
-from tensorflow import keras
+#from tensorflow.keras.preprocessing.image import ImageDataGenerator
+#from matplotlib.image import imread
+#import os
+#from datetime import datetime
+#from tensorflow import keras
 from ImageClassification.settings import BASE_DIR,MODELS_PATH
 
 # load and prepare the image
