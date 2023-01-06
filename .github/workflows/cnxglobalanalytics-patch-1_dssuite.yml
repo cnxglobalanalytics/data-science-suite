@@ -28,9 +28,7 @@ jobs:
           source venv/bin/activate
       
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-
+        run: pip install -r requirements.txt
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
@@ -62,4 +60,4 @@ jobs:
         with:
           app-name: 'dssuite'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_EE07F3DBCA5849CBB93A73152D579C82 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_25EFAB3A9C6B494FB6772CEB3A58F33B }}
