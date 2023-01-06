@@ -3,11 +3,11 @@ from tensorflow.keras.preprocessing.image import load_img
 from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.models import load_model
 import numpy as np
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Flatten
-from tensorflow.keras.layers import Dense
+#from tensorflow.keras.preprocessing.image import ImageDataGenerator
+#import tensorflow as tf
+#from tensorflow.keras.models import Sequential
+#from tensorflow.keras.layers import Flatten
+#from tensorflow.keras.layers import Dense
 from ImageClassification.settings import BASE_DIR,MODELS_PATH
 
 
