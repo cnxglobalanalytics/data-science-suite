@@ -29,7 +29,7 @@ numpy==1.24.1
 # openssl==1.1.1s
 #opencv-contrib-python==4.7.0.68
 #opencv-python==4.5.4.60
-opencv-python-headless==4.5.3.56
+#opencv-python-headless==4.5.3.56
 #opencv-python-headless==4.5.4.60
 openpyxl==3.0.10
 packaging==22.0
