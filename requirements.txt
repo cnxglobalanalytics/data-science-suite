@@ -65,3 +65,12 @@ urllib3==1.26.13
 wheel==0.37.1
 wincertstore==0.2
 gunicorn==20.1.0
+keras==2.11.0
+moviepy==1.0.3
+opencv-python==4.7.0.68
+speechrecognition==3.9.0
+tensorboard==2.11.0
+tensorflow==2.11.0
+tensorflow-estimator==2.11.0
+tensorflow-intel==2.11.0
+tensorflow-io-gcs-filesystem==0.29.0
