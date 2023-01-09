@@ -30,10 +30,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install tensorflow
-          pip install SpeechRecognition 
-          pip install moviepy
-          pip install deepface
+          pip install tensorflow --yes
+          pip install SpeechRecognition --yes 
+          pip install moviepy --yes
+          pip install deepface --yes
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
