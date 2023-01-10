@@ -6,7 +6,7 @@ certifi==2022.12.7
 charset-normalizer
 contourpy==1.0.6
 cycler==0.11.0
-#deepface==0.0.75
+deepface==0.0.75
 Django==4.0.5
 cython==0.29.32
 #easyocr==1.6.2
